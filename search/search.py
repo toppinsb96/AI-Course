@@ -81,7 +81,7 @@ def depthFirstSearch(problem):
     startState = (problem.getStartState(), [])
     stk.push(startState)
 
-    actions = []
+    actions = list()
 
     while(not stk.isEmpty()):
         node = stk.pop()
@@ -108,7 +108,7 @@ def breadthFirstSearch(problem):
     startState = (problem.getStartState(), [])
     stk.push(startState)
 
-    actions = []
+    actions = list()
 
     while(not stk.isEmpty()):
         node = stk.pop()
@@ -130,7 +130,7 @@ def uniformCostSearch(problem):
     from game import Directions
 
     q = util.PriorityQueue()
-    visited = []
+    visited = list()
     q.push((problem.getStartState(), []), 0)
 
     while(not q.isEmpty()):
@@ -158,7 +158,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     from game import Directions
 
     q = util.PriorityQueue()
-    visited = []
+    visited = list()
     q.push((problem.getStartState(), [], 0), heuristic(problem.getStartState(), problem))
 
     while(not q.isEmpty()):
