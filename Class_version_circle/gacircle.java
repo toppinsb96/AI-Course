@@ -1,12 +1,3 @@
-
-/**
- * @(#)gacircle.java
- *
- *
- *
- * @version 1.00 2008/10/25
- */
-
 import java.io.*;
 import java.util.*;
 import java.awt.*;
@@ -22,7 +13,7 @@ public class gacircle {
     double selection;//(optional) used for roullete wheel selection
 
     //this is used to create a new instance of gacircle******************************************************************************************
-    public gacircle( double x,double y, double r, double s) {
+    public gacircle(double x, double y, double r, double s) {
     	X_location = x;
     	Y_location = y;
     	radius = r;
@@ -31,13 +22,44 @@ public class gacircle {
     }
     //end of gacircle creator******************************************************
 
-//=================================================================================
-//					Project Implementation
-//=================================================================================
+    //=============================================================================
+    //					Project Implementation
+    //=============================================================================
+
 
 		static void eval_fitness(ArrayList<gacircle> S, gacircle[] G)
 		{
-				return;
+        double x1, x2, y1, y2, ra, d;
+        for(int i = 0; i < S.size(); i++)
+        {
+            for(int j = 0; j < 5; j++)
+            {
+                x1 = S.get(i).X_location;
+                y1 = S.get(i).Y_location;
+                x2 = G[j].X_location;
+                y2 = G[j].X_location;
+                ra = G[j].radius;
+                d = Math.hypot(x1-x2, y1-y2);
+                double r = d - ra;
+                if(r < 0)
+                {
+                    S.get(i).radius = 0;
+                    break;
+                }
+
+                if(S.get(i).radius == 0)
+                {
+                    S.get(i).radius = r;
+                }
+                else
+                {
+                    if(S.get(i).radius > r)
+                    {
+                        S.get(i).radius = r;
+                    }
+                }
+            }
+        }
 		}
 		static void roulette(ArrayList<gacircle> S)
 		{
@@ -45,7 +67,7 @@ public class gacircle {
 		}
 		static int select(ArrayList<gacircle> S)
 		{
-				return 1;
+				return 0;
 		}
 		static gacircle crossover(gacircle a, gacircle b)
 		{
@@ -57,103 +79,78 @@ public class gacircle {
 		}
 		static int answersofar(ArrayList<gacircle> S, gacircle[] G)
 		{
-				return 1;
+				return 0;
 		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	//=================================================================================
 	//					Project Implementation
 	//=================================================================================
   //an example code of how GA is run
-  //Feel free to chnage this to do what you want.
-  static int produce(ArrayList<gacircle>S, gacircle[] G, Splat pl){
-  	int count = 0;
-  	int current_generation = 0;
-  	int generation = 0;
-  	int current = -1;
+  //Feel free to change this to do what you want.
+  static int produce(ArrayList<gacircle> S, gacircle[] G, Splat pl){
+    	int count = 0;
+    	int current_generation = 0;
+    	int generation = 0;
+    	int current = -1;
 
-  	while(count < 1000)  { //maximum iteration is set to 1000
-		    //evaluate the fitness of the population in S
-		  	eval_fitness(S,G);
-		    //create the roullete wheel for the population in S
-		  	roulette(S);
-		    //select the father and the mother (parents)
-		  	int f = select(S);
-		  	int m = select(S);
+    	while(count < 1000)  { //maximum iteration is set to 1000
+  		    //evaluate the fitness of the population in S
+  		  	eval_fitness(S, G);
 
-		  	gacircle F;
-		  	gacircle M;
+  		    //create the roullete wheel for the population in S
+  		  	roulette(S);
+          /*
+  		    //select the father and the mother (parents)
+  		  	int f = select(S);
+  		  	int m = select(S);
 
-		  	Random prob = new Random();
-		  	int luck = prob.nextInt(100);
+  		  	gacircle F;
+  		  	gacircle M;
 
-		  	if(luck < 80) //probability of crossover is set to 0.8
-				{
-				  	gacircle child1 = crossover(S.get(f),S.get(m)); //offspring 1
-				  	gacircle child2 = crossover(S.get(m),S.get(f)); //offsring 2
-				  	mutate(child1); //mutate the offspring 1
-				  	mutate(child2); //mutate the offspring 2
-				  	//Add the offspring to the population
-				  	S.add(child1);
-				  	S.add(child2);
+  		  	Random prob = new Random();
+  		  	//int luck = prob.nextInt(100);
+          int luck = 0;
+  		  	if(luck < 80) //probability of crossover is set to 0.8
+  				{
+  				  	gacircle child1 = crossover(S.get(f),S.get(m)); //offspring 1
+  				  	gacircle child2 = crossover(S.get(m),S.get(f)); //offsring 2
+  				  	mutate(child1); //mutate the offspring 1
+  				  	mutate(child2); //mutate the offspring 2
+  				  	//Add the offspring to the population
+  				  	S.add(child1);
+  				  	S.add(child2);
 
-				  	current_generation++;
+  				  	current_generation++;
 
-				    //re-evaluate the fitness of the population again
-				    eval_fitness(S,G);
-				    //re-set the roulette wheel again
-				    roulette(S);
-		  	}
+  				    //re-evaluate the fitness of the population again
+  				    eval_fitness(S,G);
+  				    //re-set the roulette wheel again
+  				    roulette(S);
+  		  	}
 
+          */
+  		    //get the best answer so far
+  		  	int k = answersofar(S,G);
 
-		    //get the best answer so far
-		  	int k = answersofar(S,G);
-		  	gacircle A = S.get(k);
+  		  	gacircle A = S.get(k);
 
-				//update the screen
-				pl.update(A);
-				try {
-			      Thread.sleep(20);                 //1000 milliseconds is one second.
-			  } catch(InterruptedException ex) {
-			  		Thread.currentThread().interrupt();
-			  }
+  				//update the screen
+  				pl.update(A);
+  				try {
+  			      Thread.sleep(20);                 //1000 milliseconds is one second.
+  			  } catch(InterruptedException ex) {
+  			  		Thread.currentThread().interrupt();
+  			  }
 
-		  	if(k != -1 && k != current) {
-			  	 	current = k;
-			  	 	generation = current_generation;
-		  	}
-		    System.out.println("answer's generation: "+generation+ ", total generation: "+current_generation);
-		  	count++;
-  	}
-  	//return the index of the best solution at the end
-  	return current;
+  		  	if(k != -1 && k != current) {
+  			  	 	current = k;
+  			  	 	generation = current_generation;
+  		  	}
+  		    //System.out.println("answer's generation: " + generation + ", total generation: " + current_generation);
+  		  	count++;
+    	}
+    	//return the index of the best solution at the end
+    	return current;
   }
   public static void main(String[] args) {
   	Scanner scan = new Scanner(System.in);
@@ -192,7 +189,7 @@ public class gacircle {
 		sp1.run(G,B);
 
     //get the answer
-    int k = produce(pop,G,sp1);
+    int k = produce(pop, G, sp1);
 
     if(k != -1) { //an answer was found
     	System.out.println("Disks set");
@@ -206,10 +203,11 @@ public class gacircle {
 			sp1.update(A);
 
 		}
-    else {//no answer was found
-			System.out.println("no answer");
-			for(int i = 0; i < pop.size(); i++)
-				System.out.println(pop.get(i).X_location+" , " + pop.get(i).Y_location+" , " +pop.get(i).radius);
+    else
+    {//no answer was found
+    		System.out.println("no answer");
+    		for(int i = 0; i < pop.size(); i++)
+    			  System.out.println(pop.get(i).X_location+" , " + pop.get(i).Y_location+" , " +pop.get(i).radius);
 		}
   }
 }
