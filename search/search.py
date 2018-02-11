@@ -156,22 +156,17 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     from game import Directions
-
     q = util.PriorityQueue()
     visited = list()
     q.push((problem.getStartState(), [], 0), heuristic(problem.getStartState(), problem))
-
     while(not q.isEmpty()):
         state, action, cost = q.pop()
         if problem.isGoalState(state):
             return action
-
         if state not in visited:
             visited.append(state)
             for i, j, k in problem.getSuccessors(state):
-                update = action + [j]
-                updatePriority = problem.getCostOfActions(update) + heuristic(i, problem)
-                q.push((i, update, k), updatePriority)
+                q.push((i, action + [j], k), problem.getCostOfActions(action + [j]) + heuristic(i, problem))
 
 
 # Abbreviations

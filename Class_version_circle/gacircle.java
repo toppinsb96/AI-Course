@@ -25,61 +25,143 @@ public class gacircle {
     //=============================================================================
     //					Project Implementation
     //=============================================================================
-
-
-		static void eval_fitness(ArrayList<gacircle> S, gacircle[] G)
+		static double checkBoundaries(double x, double y, double radius)
 		{
-        double x1, x2, y1, y2, ra, d;
-        for(int i = 0; i < S.size(); i++)
-        {
-            for(int j = 0; j < 5; j++)
-            {
-                x1 = S.get(i).X_location;
-                y1 = S.get(i).Y_location;
-                x2 = G[j].X_location;
-                y2 = G[j].X_location;
-                ra = G[j].radius;
-                d = Math.hypot(x1-x2, y1-y2);
-                double r = d - ra;
-                if(r < 0)
-                {
-                    S.get(i).radius = 0;
-                    break;
-                }
+				if(Math.hypot(x-0, y-y) < radius) {
+						radius = Math.hypot(0-x, y-y);
+				}
+				if(Math.hypot(x-x, y-0) < radius) {
+						radius = Math.hypot(x-x, 0-y);
+				}
+				if(Math.hypot(x-10, y-y) < radius) {
+						radius = Math.hypot(10-x, y-y);
+				}
+				if(Math.hypot(x-x, 10-y) < radius) {
+						radius = Math.hypot(x-x, 10-y);
+				}
+				return radius;
+		}
+		static boolean checkPointOutside(double x, double y)
+		{
+				if(x > 10 || y > 10 || x < 0 || y < 0)
+						return true;
+				return false;
+		}
+		static void eval_fitness(ArrayList<gacircle> S, gacircle[] G) {
+				double x1, y1, x2, y2, ra, r, d;
+				int sel = 0;
 
-                if(S.get(i).radius == 0)
-                {
-                    S.get(i).radius = r;
-                }
-                else
-                {
-                    if(S.get(i).radius > r)
-                    {
-                        S.get(i).radius = r;
-                    }
-                }
-            }
-        }
+				for(gacircle i : S) {
+						i.radius = 0.0;
+						i.selection = 0.0;
+				}
+
+				for(gacircle i : S) {
+						for(gacircle j : G) {
+								x1 = i.X_location;
+								y1 = i.Y_location;
+								x2 = j.X_location;
+								y2 = j.Y_location;
+								ra = j.radius;
+
+								if(checkPointOutside(x1, y1))
+										break;
+
+								d = Math.hypot(x1-x2, y1-y2);
+								r = d - ra;
+
+								if(d < ra) {
+										i.radius = 0;
+										break;
+								}
+								if(j == G[0])
+										i.radius = checkBoundaries(x1, y1, r);
+								else {
+										if(i.radius > r)
+												i.radius = checkBoundaries(x1, y1, r);
+								}
+						}
+				}
+				// Find selection for each element. Could be better implemented?
+				for(gacircle i : S) {
+						for (gacircle j : S) {
+								if(i.radius > j.radius)
+										i.selection += 1;
+						}
+				}
+
+
 		}
 		static void roulette(ArrayList<gacircle> S)
 		{
-				return;
+				// Create probability roulette based on selection
+				double roul = 0.0;
+				for(gacircle i : S)
+						roul = roul + i.selection;
+				for(gacircle i : S)
+						i.selection = i.selection / roul;
 		}
+
 		static int select(ArrayList<gacircle> S)
 		{
-				return 0;
+				double w = 0.0;
+				int index = 0;
+
+				for(gacircle i : S)
+						w += i.selection;
+
+				double chance = new Random().nextDouble() * w;
+				for(gacircle i : S) {
+						chance -= i.selection;
+						if(chance <= 0.0) {
+								return index;
+						}
+						index++;
+				}
+				return index;
 		}
+
 		static gacircle crossover(gacircle a, gacircle b)
 		{
-				return a;
+				gacircle child = new gacircle(a.X_location, b.Y_location, 0, 0);
+				return child;
 		}
-		static void mutate(gacircle a)
+		static gacircle mutate(gacircle a)
 		{
+				double xMut = new Random().nextDouble();
+				double yMut = new Random().nextDouble();
+				int s1 = new Random().nextInt(2);
+				int s2 = new Random().nextInt(2);
 
+				if(xMut < 0.3) {
+						if(s1 > 0)
+								a.X_location += new Random().nextDouble();
+						else
+								a.X_location -= new Random().nextDouble();
+				}
+				if(yMut < 0.3) {
+						if(s2 > 0)
+								a.Y_location += new Random().nextDouble();
+						else
+								a.Y_location -= new Random().nextDouble();
+				}
+
+				return a;
 		}
 		static int answersofar(ArrayList<gacircle> S, gacircle[] G)
 		{
-				return 0;
+				double r = 0.0;
+				int ans = -1;
+				int i = 0;
+
+				for(gacircle c : S) {
+						if(c.radius > r) {
+								ans = i;
+								r = c.radius;
+						}
+						i++;
+				}
+				return ans;
 		}
 
 	//=================================================================================
@@ -91,35 +173,30 @@ public class gacircle {
     	int count = 0;
     	int current_generation = 0;
     	int generation = 0;
+
     	int current = -1;
 
-    	while(count < 1000)  { //maximum iteration is set to 1000
+    	while(count < 1500)  { //maximum iteration is set to 1000
   		    //evaluate the fitness of the population in S
   		  	eval_fitness(S, G);
-
   		    //create the roullete wheel for the population in S
   		  	roulette(S);
-          /*
   		    //select the father and the mother (parents)
   		  	int f = select(S);
-  		  	int m = select(S);
-
-  		  	gacircle F;
-  		  	gacircle M;
+					int m = select(S);
 
   		  	Random prob = new Random();
-  		  	//int luck = prob.nextInt(100);
-          int luck = 0;
+  		  	int luck = prob.nextInt(100);
   		  	if(luck < 80) //probability of crossover is set to 0.8
   				{
-  				  	gacircle child1 = crossover(S.get(f),S.get(m)); //offspring 1
-  				  	gacircle child2 = crossover(S.get(m),S.get(f)); //offsring 2
-  				  	mutate(child1); //mutate the offspring 1
-  				  	mutate(child2); //mutate the offspring 2
+  				  	gacircle child1 = crossover(S.get(f), S.get(m)); //offspring 1
+  				  	gacircle child2 = crossover(S.get(m), S.get(f)); //offsring 2
+  				  	child1 = mutate(child1); //mutate the offspring 1
+  				  	child2 = mutate(child2); //mutate the offspring 2
   				  	//Add the offspring to the population
   				  	S.add(child1);
   				  	S.add(child2);
-
+							//System.out.println(S.size());
   				  	current_generation++;
 
   				    //re-evaluate the fitness of the population again
@@ -127,8 +204,6 @@ public class gacircle {
   				    //re-set the roulette wheel again
   				    roulette(S);
   		  	}
-
-          */
   		    //get the best answer so far
   		  	int k = answersofar(S,G);
 
@@ -141,12 +216,11 @@ public class gacircle {
   			  } catch(InterruptedException ex) {
   			  		Thread.currentThread().interrupt();
   			  }
-
   		  	if(k != -1 && k != current) {
   			  	 	current = k;
   			  	 	generation = current_generation;
   		  	}
-  		    //System.out.println("answer's generation: " + generation + ", total generation: " + current_generation);
+  		    System.out.println("answer's generation: " + generation + ", total generation: " + current_generation);
   		  	count++;
     	}
     	//return the index of the best solution at the end
@@ -177,12 +251,12 @@ public class gacircle {
   		gacircle C = new gacircle(scan.nextDouble(),scan.nextDouble(),0,0);
   	    pop.add(C);
   	}
+		//splat object for drawing circle
+  	Splat sp1 = new Splat();
     //evaluating the fitness of the population
   	eval_fitness(pop,G);
     //create the slots for roullete wheel selection
   	roulette(pop);
-    //splat object for drawing circle
-  	Splat sp1 = new Splat();
     //create dummy gacircle
   	gacircle B = new gacircle(0,0,0,0);
     //draw the the 5 initial circle with the dummy circle
