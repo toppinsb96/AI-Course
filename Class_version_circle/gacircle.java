@@ -10,7 +10,7 @@ public class gacircle {
 		double X_location;
 		double Y_location;
 		double radius;
-    double selection;//(optional) used for roullete wheel selection
+        double selection;//(optional) used for roullete wheel selection
 
     //this is used to create a new instance of gacircle******************************************************************************************
     public gacircle(double x, double y, double r, double s) {
