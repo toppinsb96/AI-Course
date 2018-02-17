@@ -47,8 +47,8 @@ public class Genetic
 
 
         // Hard coded Dates for now.
-        int sDate = 365;
-        int eDate = 400;
+        int sDate = 999;
+        int eDate = 999 + 730;
 
         for(Individual i : population)
         {
@@ -133,14 +133,13 @@ public class Genetic
 
         if(chance <= 0.001)
         {
+            System.out.println("Mutating");
             if(rule[m]== 's' || rule[m] == 'm' || rule[m] == 'e')
             {
-                while(l != m)
-                    l = new Random().nextInt(3);
-
+                l = new Random().nextInt(3);
                 char tmp = rule[m];
-                rule[m] = rule[l];
-                rule[l] = tmp;
+                rule[m] = rule[l*5];
+                rule[l*5] = tmp;
             }
             else if(rule[m]== '&')
             {
@@ -247,7 +246,7 @@ public class Genetic
 
             int k = getMaxFit();
 
-            System.out.println("Current Generation: " + generation + " and current best rule: " + population.get(k).getRule() + " index: " + k);
+            System.out.println("Current Generation: " + generation + " and current best rule: " + population.get(k).getRule());
         }
     }
 }
