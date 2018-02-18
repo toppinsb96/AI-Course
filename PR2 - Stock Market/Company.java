@@ -11,7 +11,7 @@ public class Company
     double money;
     double gainAccount;
 
-
+    // Change all money and money resets to 20000.00 for Genetic Algorithm
     public Company(String path) throws FileNotFoundException
     {
         company = new CSVReader(path);
@@ -35,6 +35,7 @@ public class Company
         {
             sell(day);
         }
+        // uncomment for Genetic Algorithm
         /*
         if(preMoney == money && preGain == gainAccount)
         {
