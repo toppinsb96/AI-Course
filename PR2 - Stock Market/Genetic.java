@@ -53,6 +53,7 @@ public class Genetic
         for(Individual i : population)
         {
             double fit = 0.0;
+
             for(int day = sDate; day < eDate; day++)
             {
                 company1.trade(i.checkBuy(company1.getClosings(), company1.getDates(), day), day);
@@ -60,9 +61,10 @@ public class Genetic
                 company3.trade(i.checkBuy(company3.getClosings(), company3.getDates(), day), day);
                 company4.trade(i.checkBuy(company4.getClosings(), company4.getDates(), day), day);
                 company5.trade(i.checkBuy(company5.getClosings(), company5.getDates(), day), day);
+
             }
             company1.sell(eDate);
-
+            //System.out.println(company1.money + "   " + company1.gainAccount);
             fit += company1.money;
             fit += company1.gainAccount;
             fit += company2.money;
@@ -75,6 +77,12 @@ public class Genetic
             fit += company5.gainAccount;
 
             i.fitness = fit;
+
+            company1.resetCost();
+            company2.resetCost();
+            company3.resetCost();
+            company4.resetCost();
+            company5.resetCost();
         }
     }
     public void roulette()

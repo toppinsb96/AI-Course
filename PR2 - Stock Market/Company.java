@@ -20,7 +20,7 @@ public class Company
         stocksOwned = 0;
 
         // Company Starts at $20,000
-        money = 20000.00;
+        money = 100000.00;
         gainAccount = 0.0;
     }
     public void trade(Boolean b, int day)
@@ -35,11 +35,16 @@ public class Company
         {
             sell(day);
         }
-
+        /*
+        if(preMoney == money && preGain == gainAccount)
+        {
+            money = money/2;
+        }*/
     }
     public void resetCost()
     {
-        money = 20000.00;
+        money = 100000.00;
+        gainAccount = 0.0;
     }
     public void buy(int day)
     {
@@ -78,18 +83,23 @@ public class Company
     public void updateAccounts()
     {
 
-        if(money > 20000.00)
+        if(money > 100000.00)
         {
-            gainAccount = money - 20000.00;
-            money = 20000.00;
+            gainAccount = money - 100000.00;
+            money = 100000.00;
         }
-        else if(money <= 20000.00 && gainAccount > 0)
+        else if(money <= 100000.00 && gainAccount > 0)
         {
             money += gainAccount;
-            if(money > 20000.00)
+            if(money > 100000.00)
             {
-                gainAccount = money - 20000.00;
+                gainAccount = money - 100000.00;
             }
         }
+    }
+
+    public void printData()
+    {
+        company.printData();
     }
 }

@@ -11,21 +11,3 @@ public class Main
         stockMarket.startTrading();
     }
 }
-
-
-/*
-Company ford = new Company("HistoricalData/F.csv");
-Individual rule = new Individual("s400&e010&m010");
-boolean didWeBuy = rule.checkbuy(ford.getClosings(), ford.getDates(), "2017-01-04");
-
-if(didWeBuy == true)
-{
-    ford.buy(ford.getDateClosing("2018-01-08"));
-}
-else
-{
-    ford.sell(ford.getDateClosing("2018-01-08"));
-}
-
-System.out.println(ford.getMoney());
-*/

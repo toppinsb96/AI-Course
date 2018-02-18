@@ -26,7 +26,6 @@ public class Individual
     public Individual(String rule)
     {
         this.rule = rule;
-        s = m = e = 0;
         fitness = 0;
         parseRule();
     }
@@ -91,6 +90,7 @@ public class Individual
         }
         double sma = numerator / n;
 
+
         return sma > actualClosing;
     }
     public Boolean maxRule(int n, ArrayList<String> closings, ArrayList<String> dates, String today)
@@ -107,6 +107,7 @@ public class Individual
             if(Double.parseDouble(closings.get(i)) > max)
                 max = Double.parseDouble(closings.get(i));
         }
+
 
         return max < actualClosing;
     }
@@ -130,9 +131,6 @@ public class Individual
 
         for(int i = 0; i < n; i++)
             denominator += Math.pow((1-alpha), i);
-
-
-
 
         return numerator / denominator < actualClosing;
 
